@@ -1,32 +1,37 @@
-<nav
-  style={{
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "10px 20px",
-    backgroundColor: "#f8f9fa",
-  }}
->
-  {/* Left side: Logo */}
-  <div style={{ display: "flex", alignItems: "center" }}>
-    <img src="/logo.png" alt="Shabakah Logo" style={{ height: "40px", marginRight: "10px" }} />
-    <span style={{ fontWeight: "bold", fontSize: "20px" }}>Shabakah</span>
-  </div>
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { useState } from "react";
 
-  {/* Middle: Navigation links with forced spacing */}
-  <div style={{ display: "flex", gap: "20px" }}>
-    <a href="/" style={{ textDecoration: "none" }}>Home</a>
-    <a href="/standings" style={{ textDecoration: "none" }}>Standings</a>
-    <a href="/scores" style={{ textDecoration: "none" }}>Scores</a>
-    <a href="/ranking" style={{ textDecoration: "none" }}>Ranking</a>
-    <a href="/news" style={{ textDecoration: "none" }}>News</a>
-    <a href="/tickets" style={{ textDecoration: "none" }}>Tickets</a>
-    <a href="/store" style={{ textDecoration: "none" }}>Store</a>
-  </div>
+export default function Navbar() {
+  const [lang, setLang] = useState<"EN" | "AR">("EN");
 
-  {/* Right side: Language switcher */}
-  <div style={{ display: "flex", gap: "10px" }}>
-    <a href="/" style={{ textDecoration: "none" }}>English</a>
-    <a href="/ar" style={{ textDecoration: "none" }}>العربية</a>
-  </div>
-</nav>
+  return (
+    <nav className="flex items-center justify-between bg-black text-white px-6 py-4 shadow-md">
+      {/* Logo */}
+      <Link href="/" className="flex items-center gap-2">
+        <Image src="/shabakah_logo_clean.png" alt="Shabakah" width={40} height={40} />
+        <span className="font-bold text-xl">Shabakah</span>
+      </Link>
+
+      {/* Navigation */}
+      <div className="flex gap-6">
+        <Link href="/matches">Matches</Link>
+        <Link href="/standings">Standings</Link>
+        <Link href="/rankings">Rankings</Link>
+        <Link href="/news">News</Link>
+        <Link href="/tickets">Tickets</Link>
+        <Link href="/store">Store</Link>
+        <Link href="/sponsors">Sponsors</Link>
+      </div>
+
+      {/* Language Switch */}
+      <button
+        onClick={() => setLang(lang === "EN" ? "AR" : "EN")}
+        className="bg-white text-black px-3 py-1 rounded"
+      >
+        {lang}
+      </button>
+    </nav>
+  );
+}
