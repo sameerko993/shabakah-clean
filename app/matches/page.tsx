@@ -2,75 +2,103 @@
 
 import { useEffect, useState } from "react";
 
-type Match = {
-  fixture: {
-    date: string;
-    status: { short: string };
-  };
-  teams: {
-    home: { name: string };
-    away: { name: string };
-  };
-};
-
 export default function MatchesPage() {
-  const [matches, setMatches] = useState<Match[]>([]);
+  const [matches, setMatches] = useState<any[]>([]);
   const [day, setDay] = useState<"yesterday" | "today" | "tomorrow">("today");
 
   useEffect(() => {
     async function fetchMatches() {
-      let date = new Date();
-
-      if (day === "yesterday") {
-        date.setDate(date.getDate() - 1);
-      } else if (day === "tomorrow") {
-        date.setDate(date.getDate() + 1);
+      try {
+        const res = await fetch("/api/matches");
+        const data = await res.json();
+        console.log("API Matches:", data); // Debug log
+        setMatches(data || []);
+      } catch (err) {
+        console.error("Error fetching matches:", err);
       }
+    }
+    fetchMatches();
+  }, []);
 
-      const formatted = date.toISOString().split("T")[0];
+  function filterMatches() {
+    const today = new Date();
+    let targetDate = new Date();
 
-      const res = await fetch(
-        `https://v3.football.api-sports.io/fixtures?date=${formatted}`,
-        {
-          headers: {
-            "x-apisports-key": process.env.NEXT_PUBLIC_API_KEY as string,
-          },
-        }
-      );
-
-      const data = await res.json();
-      setMatches(data.response || []);
+    if (day === "yesterday") {
+      targetDate.setDate(today.getDate() - 1);
+    } else if (day === "tomorrow") {
+      targetDate.setDate(today.getDate() + 1);
     }
 
-    fetchMatches();
-  }, [day]);
+    const yyyy = targetDate.getFullYear();
+    const mm = String(targetDate.getMonth() + 1).padStart(2, "0");
+    const dd = String(targetDate.getDate()).padStart(2, "0");
+    const target = `${yyyy}-${mm}-${dd}`;
+
+    return matches.filter((m: any) =>
+      m.fixture?.date?.startsWith(target)
+    );
+  }
+
+  const filtered = filterMatches();
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Matches</h1>
+      <h1 className="text-2xl font-bold mb-6">Matches</h1>
 
-      {/* Tabs for Yesterday / Today / Tomorrow */}
+      {/* Tabs */}
       <div className="flex gap-4 mb-6">
-        <button onClick={() => setDay("yesterday")}>Yesterday</button>
-        <button onClick={() => setDay("today")}>Today</button>
-        <button onClick={() => setDay("tomorrow")}>Tomorrow</button>
+        {["yesterday", "today", "tomorrow"].map((d) => (
+          <button
+            key={d}
+            onClick={() => setDay(d as any)}
+            className={`px-4 py-2 rounded ${
+              day === d ? "bg-blue-600 text-white" : "bg-gray-200"
+            }`}
+          >
+            {d.charAt(0).toUpperCase() + d.slice(1)}
+          </button>
+        ))}
       </div>
 
-      {matches.length > 0 ? (
-        <ul className="space-y-2">
-          {matches.map((m, i) => (
-            <li key={i} className="bg-white p-3 rounded shadow">
-              <div>
-                {m.teams.home.name} vs {m.teams.away.name}
+      {/* Matches */}
+      {filtered.length > 0 ? (
+        <div className="grid gap-4">
+          {filtered.map((m: any, idx: number) => (
+            <div
+              key={idx}
+              className="bg-white shadow rounded-lg p-4 flex items-center justify-between"
+            >
+              <div className="flex items-center gap-3">
+                {m.teams?.home?.logo && (
+                  <img
+                    src={m.teams.home.logo}
+                    alt={m.teams.home.name}
+                    className="h-6 w-6"
+                  />
+                )}
+                <span>{m.teams?.home?.name}</span>
               </div>
-              <div className="text-sm text-gray-500">
-                {new Date(m.fixture.date).toLocaleString()} – {m.fixture.status.short}
+
+              <span className="font-bold">
+                {m.goals?.home ?? "-"} : {m.goals?.away ?? "-"}
+              </span>
+
+              <div className="flex items-center gap-3">
+                <span>{m.teams?.away?.name}</span>
+                {m.teams?.away?.logo && (
+                  <img
+                    src={m.teams.away.logo}
+                    alt={m.teams.away.name}
+                    className="h-6 w-6"
+                  />
+                )}
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       ) : (
-        <p>No matches found for {day}.</p>
+        <p className="text-gray-500">No matches scheduled for this day.</p>
       )}
     </div>
   );

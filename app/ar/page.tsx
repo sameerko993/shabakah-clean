@@ -1,8 +1,10 @@
 export default function ArabicHome() {
   return (
-    <main style={{ direction: "rtl", padding: "20px" }}>
-      <h1>مرحباً بكم في شبكة ⚽</h1>
-      <p>تابع أحدث المباريات، الترتيب، والأخبار باللغة العربية.</p>
-    </main>
+    <div className="text-center py-10">
+      <h1 className="text-3xl font-bold mb-4">مرحباً بكم في شبكة</h1>
+      <p className="text-lg text-gray-700">
+        منصتكم الشاملة لنتائج المباريات، الترتيب، الأخبار، وتصنيفات FIFA.
+      </p>
+    </div>
   );
 }
