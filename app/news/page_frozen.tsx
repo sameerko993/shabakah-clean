@@ -1,33 +1,32 @@
+// ✅ English News Page
+console.log("📰 ENGLISH NEWS PAGE LOADED");
+
 export const metadata = {
   title: "Shabakah News",
-  description: "Latest football updates and headlines on Shabakah.",
+  description: "Latest football news from leagues and tournaments around the world.",
 };
 
 export default function NewsPage() {
-  const sampleNews = [
+  const englishNews = [
     {
       id: 1,
       title: "🏆 Real Madrid wins El Clásico",
       desc: "Real Madrid defeats Barcelona 3–2 in a dramatic La Liga clash at the Bernabéu.",
-      image: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg",
     },
     {
       id: 2,
       title: "🔥 Premier League title race tightens",
-      desc: "Arsenal and Liverpool share top spot after weekend wins, while City trails closely.",
-      image: "https://upload.wikimedia.org/wikipedia/en/f/f2/Manchester_City_FC_badge.svg",
+      desc: "Arsenal and Liverpool share the top spot after weekend wins, with Man City close behind.",
     },
     {
       id: 3,
       title: "🌍 World Cup 2026 qualifiers heat up",
       desc: "National teams battle for early qualification spots across continents.",
-      image: "https://upload.wikimedia.org/wikipedia/en/e/e3/FIFA_World_Cup_2026_logo.svg",
     },
     {
       id: 4,
       title: "🇸🇦 Al Hilal dominates AFC Champions League",
       desc: "Saudi powerhouse Al Hilal continues perfect form in Asia’s biggest tournament.",
-      image: "https://upload.wikimedia.org/wikipedia/en/8/88/Al_Hilal_SFC_logo.svg",
     },
   ];
 
@@ -38,18 +37,11 @@ export default function NewsPage() {
       </h1>
 
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {sampleNews.map((news) => (
+        {englishNews.map((news) => (
           <div
             key={news.id}
             className="bg-gray-900 border border-gray-700 rounded-2xl shadow-lg p-5 hover:shadow-yellow-400/30 transition duration-300"
           >
-            <div className="flex justify-center mb-4">
-              <img
-                src={news.image}
-                alt={news.title}
-                className="w-20 h-20 object-contain bg-gray-800 rounded-full p-2"
-              />
-            </div>
             <h2 className="text-xl font-semibold text-yellow-400 mb-2 text-center">
               {news.title}
             </h2>
